@@ -1,0 +1,15 @@
+{
+  "name": "OpenCode Devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "remoteUser": "ubuntu",
+  "mounts": [
+    "source=${localEnv:HOME}/.local/share/opencode,target=/home/ubuntu/.local/share/opencode,type=bind,consistency=cached"	
+  ],
+  "forwardPorts": []
+}
