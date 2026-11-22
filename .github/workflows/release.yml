@@ -87,6 +87,10 @@ jobs:
       - ui
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - uses: actions/download-artifact@v4
         with:
           name: agent-jar
