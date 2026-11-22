@@ -33,7 +33,7 @@ sbt GraalVMNativeImage/packageBin # Creates a native binary for your system.
 You can run the Agent Docker image with the following command. Put your agent config JSON in the ./data directory, along with optional UI assets.
 
 ```
-docker run --network host -v ./data:/opt/docker/data -it spartan-sensor-mesh:0.1.0
+docker run --network host -v ./data:/opt/docker/data -it spartan-sensor-mesh:0.1.1
 ```
 
 ## Configuration

@@ -9,7 +9,7 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "Spartan Sensor Mesh",
-    version := "0.1.0",
+    version := "0.1.1",
 
     scalaVersion := scala3Version,
 
