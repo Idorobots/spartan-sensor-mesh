@@ -14,6 +14,7 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     resolvers += Resolver.githubPackages("SpartanWorks"),
+    resolvers += Resolver.githubPackages("Idorobots"),
     libraryDependencies ++= Seq(
       // Basics
       "org.typelevel" %% "cats-effect" % "3.5.0",
