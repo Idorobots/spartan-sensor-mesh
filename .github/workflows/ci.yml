@@ -103,6 +103,8 @@ jobs:
 
       - name: Install Coursier & SBT
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt
 
       - name: Test the code
         env:
@@ -110,12 +112,12 @@ jobs:
         working-directory: ./agent
         run: sbt coverage test coverageReport
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: agent/target/scala-3.2.2/scoverage-report/
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: agent/target/test-reports/

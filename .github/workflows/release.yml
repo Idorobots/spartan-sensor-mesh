@@ -30,6 +30,8 @@ jobs:
 
       - name: Install Coursier & SBT
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt
 
       - name: Build an Uberjar
         env:
