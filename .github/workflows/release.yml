@@ -1,0 +1,106 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+  # Allows to run this via the Actions tab
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v0.1.0).'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  agent:
+    name: Build the Agent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: 17
+
+      - uses: coursier/cache-action@v6
+
+      - name: Install Coursier & SBT
+        uses: coursier/setup-action@v1
+
+      - name: Build an Uberjar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./agent
+        run: sbt assembly
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-jar
+          path: agent/target/scala-3.2.2/*.jar
+          if-no-files-found: error
+
+  ui:
+    name: Build the UI
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - uses: browser-actions/setup-chrome@latest
+
+      - name: Install deps
+        working-directory: ./ui
+        run: npm install
+
+      - name: Test the code
+        working-directory: ./ui
+        run: npm run test:ci
+
+      - name: Build the release bundle
+        working-directory: ./ui
+        run: ENV=prod npx gulp release
+
+      - name: Package the release bundle
+        run: tar -czf "spartan-sensor-mesh-ui-${TAG}.tar.gz" -C ui/dist .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-bundle
+          path: spartan-sensor-mesh-ui-*.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: Publish the Release
+    needs:
+      - agent
+      - ui
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: agent-jar
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-bundle
+          path: dist
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: >
+          gh release create "$TAG"
+          --title "$TAG"
+          --generate-notes
+          dist/*
