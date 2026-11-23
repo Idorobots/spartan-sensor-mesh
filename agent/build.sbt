@@ -51,7 +51,7 @@ lazy val root = project
     // Docker packaging:
     Docker / packageName := packageName.value,
     Docker / version := version.value,
-    dockerBaseImage := "openjdk:23-slim",
+    dockerBaseImage := "eclipse-temurin:23-jre",
     dockerCommands := dockerCommands.value.flatMap {
       case cmd @ ExecCmd("VOLUME", "/opt/docker/data") =>
         Seq(cmd, ExecCmd("RUN", "apt-get", "update"), ExecCmd("RUN", "apt-get", "install", "-y", "nut-client"))
