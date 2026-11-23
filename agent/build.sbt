@@ -70,15 +70,12 @@ lazy val root = project
     },
 
     // GraalVM packaging:
-    graalVMNativeImageGraalVersion := Some("22.3.1"),
+    // NOTE Built with a locally installed GraalVM (e.g. via `actions/setup-java`
+    // in CI). The plugin's Docker-based build image relies on `gu install
+    // native-image`, which no longer works for EOL GraalVM releases.
+    graalVMNativeImageGraalVersion := None,
     graalVMNativeImageOptions ++= Seq(
       "--no-fallback",
-      "--static",
-      "--allow-incomplete-classpath",
-      "--report-unsupported-elements-at-runtime",
-      "--enable-https",
-      "--enable-http",
-      "--enable-all-security-services",
       "-H:+ReportExceptionStackTraces",
     ),
 

@@ -134,6 +134,15 @@ jobs:
         working-directory: ./agent
         run: sbt Docker/publishLocal
 
+      - name: Install native-image dependencies
+        run: sudo apt-get update && sudo apt-get install -y zlib1g-dev
+
+      - name: Set up GraalVM
+        uses: actions/setup-java@v4
+        with:
+          distribution: graalvm
+          java-version: 21
+
       - name: Build a GraalVM native-image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
